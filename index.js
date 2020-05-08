@@ -19,7 +19,7 @@ http.createServer((request, response) => {
         <style>
           table { margin-top: 10px; border-collapse: collapse; border-spacing: 0; }
           th { border-bottom: 1px solid #ddd; }
-          td { padding: 8px; }
+          th, td { padding: 8px; }
           td.cookie-value { word-break: break-all; }
           tr.empty { font-style: italic; text-align: center; }
         </style>
