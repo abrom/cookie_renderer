@@ -38,7 +38,7 @@ http.createServer((request, response) => {
           ${
             cookie_names.map((key) => {
               index += 1;
-              return `<tr><td>${index}</td><td>${key}</td><td class="cookie-value">${cookies[key]}</td></tr>`
+              return `<tr><td>${index}.</td><td>${key}</td><td class="cookie-value">${cookies[key]}</td></tr>`
             }).join('') || '<tr class="empty"><td colspan="3">Nothing to see here</td></tr>'
           }
           </tbody>
