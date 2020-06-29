@@ -6,7 +6,7 @@ http.createServer((request, response) => {
 
   requestCookie && requestCookie.split(";").forEach((cookie) => {
     const parts = cookie.split("=");
-    cookies[parts.shift().trim()] = decodeURI(parts.join("="));
+    cookies[parts.shift().trim()] = decodeURIComponent(parts.join("="));
   });
   cookie_names = Object.keys(cookies);
 
