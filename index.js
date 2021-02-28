@@ -1,14 +1,24 @@
 const http = require('http');
+const url = require('url');
 
 http.createServer((request, response) => {
-  const requestCookie = request.headers.cookie;
-  let cookies = {}, index = 0, cookie_names;
+  let valueLookup = {}, index = 0, requestType;
 
-  requestCookie && requestCookie.split(";").forEach((cookie) => {
-    const parts = cookie.split("=");
-    cookies[parts.shift().trim()] = decodeURIComponent(parts.join("="));
-  });
-  cookie_names = Object.keys(cookies);
+  const query = url.parse(request.url, true).query;
+
+  if (query.type === 'headers') {
+    requestType = 'header';
+    valueLookup = request.headers;
+  } else {
+    requestType = 'cookie';
+    const requestCookie = request.headers.cookie;
+    requestCookie && requestCookie.split(";").forEach((cookie) => {
+      const parts = cookie.split("=");
+      valueLookup[parts.shift().trim()] = decodeURIComponent(parts.join("="));
+    });
+  }
+  const names = Object.keys(valueLookup);
+  const requestTitle = requestType[0].toUpperCase() + requestType.substring(1)
 
   response.writeHead(200, { "Content-Type": "text/html" });
   response.end(
@@ -25,20 +35,20 @@ http.createServer((request, response) => {
         </style>
       </head>
       <body>
-        Request contained ${cookie_names.length} cookie${cookie_names.length == 1 ? '' : 's'}
+        Request contained ${names.length} ${requestType}${names.length == 1 ? '' : 's'}
         <table>
           <thead>
             <tr>
               <th></th>
-              <th>Cookie name</th>
-              <th>Cookie value</th>
+              <th>${requestTitle} name</th>
+              <th>${requestTitle} value</th>
             </tr>
           </thead>
           <tbody>
           ${
-            cookie_names.map((key) => {
+            names.map((key) => {
               index += 1;
-              return `<tr><td>${index}.</td><td>${key}</td><td class="cookie-value">${cookies[key]}</td></tr>`
+              return `<tr><td>${index}.</td><td>${key}</td><td class="cookie-value">${valueLookup[key]}</td></tr>`
             }).join('') || '<tr class="empty"><td colspan="3">Nothing to see here</td></tr>'
           }
           </tbody>
